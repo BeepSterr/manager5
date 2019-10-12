@@ -1,0 +1,46 @@
+
+<div class="item">
+    <div class="row">
+        <div class="col s2 m2 l1 eventitem">
+            <br>
+
+            <!--<for(item in input.l.logItems)>
+                <if(item.event == input.event)>
+                    <if(item.enabled == true)>
+                        <input type="checkbox" class="checkbox-manager" id="log-enabled-${ input.event }" name="log-enabled-${ input.event }" checked />
+                    </if>
+                    <else>
+                        
+                    </else>
+                </if>
+            </for>-->
+
+            <input type="checkbox" class="checkbox-manager" id="log-enabled-${ input.event }" name="log-enabled-${ input.event }" />
+            <label for="log-enabled-${ input.event }"></label>
+        </div>
+        <div class="col s10 m10 l5">
+            <h5 onclick=''>${ input.name }</h5>
+            <i onclick=''>${ input.desc }</i>
+        </div>
+        <div class="col s12 m12 l5">
+
+            <br class="hide-on-large-only">
+
+            <div class="input-field">
+                <select class="text-channel-select" id="log-channel-${ input.event }" name="log-channel-${ input.event }">
+                    <option value="DEFAULT">Use the default channel.</option>
+                </select>
+                <label>Logging Channel</label>
+            </div>	
+        </div>
+    </div>
+        
+    <hr class="hide-on-large-only">
+
+    <script>
+
+        log.push('${input.event}')
+
+    </script>
+
+</div>

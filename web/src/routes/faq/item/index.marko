@@ -1,0 +1,29 @@
+<site-layout>
+  <@title>
+    FAQ
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/faq" class="breadcrumb">FAQ</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+    <div class="container">
+
+      <br><br>
+      <h4> ${input.faq.title} </h4>
+
+      <div class="content">
+        $!{input.faq.content}
+      </div>
+
+    </div>
+
+  </@content>
+</site-layout>

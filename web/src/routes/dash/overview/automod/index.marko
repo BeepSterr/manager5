@@ -1,0 +1,564 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          
+          <a href="/g/${ input.guild.id }" class="breadcrumb">${ input.guild.name }</a>
+          <a href="/g/${ input.guild.id }/automod/edit" class="breadcrumb">Moderation</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+  
+    <script>
+
+      editor = true;
+    
+      guild = ${ JSON.stringify(input.guild) };
+      settings = ${ JSON.stringify(input.settings) };
+      try { settings.logs = JSON.parse(settings.logging); }catch(ex){ settings.logs = {}; }
+
+      settings.autoMod = JSON.parse(settings.autoMod);
+
+      saveURL = '/api/guild/'+guild.id+'/submitChanges/autoMod'
+
+      function createSettingsObject(){
+
+        var result = {}
+
+
+        result.invites      = {}
+        result.badlinks     = {}
+        result.caps         = {}
+        result.listBoost    = {}
+        result.mentions     = {}
+        result.gmentions    = {}
+        result.words        = {}
+
+
+        result.invites.enabled      = getBool('autoMod_Invites');
+        result.invites.ech          = $('#InvitesExclude').val();
+
+        result.badlinks.enabled     = getBool('autoMod_BadLinks');
+        result.badlinks.ech         = $('#BadLinksExclude').val();
+
+        result.caps.enabled         = getBool('autoMod_AllCaps');
+        result.caps.ech             = $('#AllCapsExclude').val();
+        result.caps.range           = Number($('#AllCapsRange').val());
+
+        result.listBoost.enabled    = getBool('autoMod_ListBoost');
+
+        result.mentions.enabled     = getBool('autoMod_Mentions');
+        result.mentions.ech         = $('#MentionsExclude').val();
+        result.mentions.range       = Number($('#MentionsRange').val());
+
+        result.gmentions.enabled    = getBool('autoMod_GhostMentions');
+        result.gmentions.ech        = $('#GMentionsExclude').val();
+
+        result.words.enabled        = getBool('autoMod_words');
+        result.words.ech            = $('#WordsExclude').val();
+        result.words.words          = $('#WordsList').val();
+
+
+
+        return JSON.stringify(result);
+
+      }
+
+      function extraOptionVisibilityToggle( target ){
+
+        var object = $(target);
+        var expandedOptions = $('#' + object.attr('id') + "_Expanded")
+
+        if(object.is(":checked")){
+          expandedOptions.fadeIn('fast');
+        }else{
+          expandedOptions.fadeOut('fast');
+        }
+
+      }
+    
+    </script>
+	
+    <div class="container" id="welcomer">
+
+      <br><br>
+
+      <h1> <a class="yellow-text" href="/g/${ input.guild.id }/"><</a> ${ input.guild.name } </h1>
+
+    </div>
+
+
+    <div class="container" id="config-content">
+
+      <form method="POST">
+
+          <h3>AutoMod Detections</h3>
+          <br>
+
+          <div class="row">
+            <div class="col s12">
+
+              <div class="item card-panel grey darken-4">
+                <div class="row">
+                  <div class="col s2 m2 l1 eventitem center-align">
+                    <br>
+                    <input onchange="extraOptionVisibilityToggle(this)" type="checkbox" class="checkbox-manager" id="autoMod_Invites" name="autoMod_Invites" />
+                    <label for="autoMod_Invites"></label>
+                  
+                  </div>
+                  <div class="col s10 m10 l11">
+
+                    <h5 onclick=''>Discord Invites</h5>
+                    <i onclick=''>Disallow invites to other discord servers.</i>
+
+                  </div>
+                </div>
+                <div class="row" id="autoMod_Invites_Expanded">
+                  <div class="col s12">
+                      
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <br><b>Excluded Channels</b><br>
+                          <i>Discord Invites will not be deleted in these channels.</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <div class="input-field col s10" id="InvitesExcludeCollection">
+                            <input hidden data-collection="InvitesExcludeCollection" value="[]" id="InvitesExclude" name="InvitesExclude" type="text"><br>
+                            <div class="chip bold manager-yellow" data-modal="txt" data-target="InvitesExcludeCollection" data-type="textChannel" onclick="addRole(this);"> + </div>
+                          </div>
+
+                        </div>  
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!--> /////////////////////////////////// -->
+              
+              <div class="item card-panel grey darken-4">
+                <div class="row">
+                  <div class="col s2 m2 l1 eventitem center-align">
+                    <br>
+                    <input onchange="extraOptionVisibilityToggle(this)" type="checkbox" class="checkbox-manager" id="autoMod_BadLinks" name="autoMod_BadLinks" />
+                    <label for="autoMod_BadLinks"></label>
+                  
+                  </div>
+                  <div class="col s10 m10 l11">
+
+                    <h5 onclick=''>Bad Links</h5>
+                    <i onclick=''>Links posted will be checked for Phishing & Malware against the Google Safe Browsing API.</i>
+
+                  </div>
+                </div>
+                <div class="row" id="autoMod_BadLinks_Expanded">
+                  <div class="col s12">
+                      
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <br><b>Excluded Channels</b><br>
+                          <i>Bad Links will not be deleted in these channels.</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <div class="input-field col s10" id="BadLinksExcludeCollection">
+                            <input hidden data-collection="BadLinksExcludeCollection" value="[]" id="BadLinksExclude" name="BadLinksExclude" type="text"><br>
+                            <div class="chip bold manager-yellow" data-modal="txt" data-target="BadLinksExcludeCollection" data-type="textChannel" onclick="addRole(this);"> + </div>
+                          </div>
+
+                        </div>  
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!--> /////////////////////////////////// -->
+              
+              <div class="item card-panel grey darken-4">
+                <div class="row">
+                  <div class="col s2 m2 l1 eventitem center-align">
+                    <br>
+                    <input onchange="extraOptionVisibilityToggle(this)" type="checkbox" class="checkbox-manager" id="autoMod_AllCaps" name="autoMod_AllCaps" />
+                    <label for="autoMod_AllCaps"></label>
+                  
+                  </div>
+                  <div class="col s10 m10 l11">
+
+                    <h5 onclick=''>All Caps</h5>
+                    <i onclick=''>DELETES MESSAGES LIKE THIS LOLOLOL</i>
+
+                  </div>
+                </div>
+                <div class="row" id="autoMod_AllCaps_Expanded">
+                  <div class="col s12">
+                      
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <br><b>EXCLUDED CHANNELS</b><br>
+                          <i>MESSAGES WITH ALL CAPS WILL NOT BE DELETED IN THESE CHANNELS</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <div class="input-field col s10" id="AllCapsExcludeCollection">
+                            <input hidden data-collection="AllCapsExcludeCollection" value="[]" id="AllCapsExclude" name="AllCapsExclude" type="text"><br>
+                            <div class="chip bold manager-yellow" data-modal="txt" data-target="AllCapsExcludeCollection" data-type="textChannel" onclick="addRole(this);"> + </div>
+                          </div>
+
+                        </div>  
+                      </div>  
+                      <br>                    
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <b>CAPS%</b><br>
+                          <i>HOW MUCH % OF THE MESSAGE SHOULD BE CAPITAL LETTERS TO BE CONSIDERED ALL CAPS</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <p class="range-field">
+                            <span>Capital Letter %:</span>
+                            <input type="range" id="AllCapsRange" name="AllCapsRange" min="50" max="100" step="5"/>
+                          </p>  
+
+                        </div>  
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!--> /////////////////////////////////// -->
+              
+              <div class="item card-panel grey darken-4">
+                <div class="row">
+                  <div class="col s2 m2 l1 eventitem center-align">
+                    <br>
+                    <input onchange="extraOptionVisibilityToggle(this)" type="checkbox" class="checkbox-manager" id="autoMod_ListBoost" name="autoMod_ListBoost" />
+                    <label for="autoMod_ListBoost"></label>
+                  
+                  </div>
+                  <div class="col s10 m10 l11">
+
+                    <h5 onclick=''>Listboosting</h5>
+                    <i onclick=''>Resets NickNames of members trying to use special characters like !, ~ and ? to appear on the top of the member list.</i>
+
+                  </div>
+                </div>
+                <div class="row" id="autoMod_ListBoost_Expanded">
+                  <div class="col s12">
+                      
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <i>There isn't any extra options to configure..</i>
+
+                        </div>  
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!--> /////////////////////////////////// -->
+              
+              <div class="item card-panel grey darken-4">
+                <div class="row">
+                  <div class="col s2 m2 l1 eventitem center-align">
+                    <br>
+                    <input onchange="extraOptionVisibilityToggle(this)" type="checkbox" class="checkbox-manager" id="autoMod_Mentions" name="autoMod_Mentions" />
+                    <label for="autoMod_Mentions"></label>
+                  
+                  </div>
+                  <div class="col s10 m10 l11">
+
+                    <h5 onclick=''>Mass-Mention</h5>
+                    <i onclick=''>Delets messages mentioning many people.</i>
+
+                  </div>
+                </div>
+                <div class="row" id="autoMod_Mentions_Expanded">
+                  <div class="col s12">
+                      
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <br><b>Excluded Channels</b><br>
+                          <i>Channels where Mass Mentioning will be allowed.</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <div class="input-field col s10" id="MentionsExcludeCollection">
+                            <input hidden data-collection="MentionsExcludeCollection" value="[]" id="MentionsExclude" name="MentionsExclude" type="text"><br>
+                            <div class="chip bold manager-yellow" data-modal="txt" data-target="MentionsExcludeCollection" data-type="textChannel" onclick="addRole(this);"> + </div>
+                          </div>
+
+                        </div>  
+                      </div>  
+                      <br>                    
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <b>Minimum Mentions to trigger</b><br>
+                          <i>How many people need to be mentioned before this is triggered?</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <p class="range-field">
+                            <span>Mentions Required:</span>
+                            <input type="range" id="MentionsRange" name="MentionsRange" min="3" max="10" step="1"/>
+                          </p>  
+
+                        </div>  
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!--> /////////////////////////////////// -->
+              
+              <div class="item card-panel grey darken-4">
+                <div class="row">
+                  <div class="col s2 m2 l1 eventitem center-align">
+                    <br>
+                    <input onchange="extraOptionVisibilityToggle(this)" type="checkbox" class="checkbox-manager" id="autoMod_GhostMentions" name="autoMod_GhostMentions" />
+                    <label for="autoMod_GhostMentions"></label>
+                  
+                  </div>
+                  <div class="col s10 m10 l11">
+
+                    <h5 onclick=''>Ghost Ping</h5>
+                    <i>Will inform those affected where they were ghostpinged.</i>
+
+                  </div>
+                </div>
+                <div class="row" id="autoMod_GhostMentions_Expanded">
+                  <div class="col s12">
+                      
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <br><b>Excluded Channels</b><br>
+                          <i>Ghost pings are allowed in these channels.</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <div class="input-field col s10" id="GhostMentionsExcludeCollection">
+                            <input hidden data-collection="GhostMentionsExcludeCollection" value="[]" id="GMentionsExclude" name="GMentionsExclude" type="text"><br>
+                            <div class="chip bold manager-yellow" data-modal="txt" data-target="GhostMentionsExcludeCollection" data-type="textChannel" onclick="addRole(this);"> + </div>
+                          </div>
+
+                        </div>  
+                      </div>  
+
+                  </div>
+                </div>
+              </div>
+
+              <!--> /////////////////////////////////// -->
+              
+              <div class="item card-panel grey darken-4">
+                <div class="row">
+                  <div class="col s2 m2 l1 eventitem center-align">
+                    <br>
+                    <input onchange="extraOptionVisibilityToggle(this)" type="checkbox" class="checkbox-manager" id="autoMod_words" name="autoMod_words" />
+                    <label for="autoMod_words"></label>
+                  
+                  </div>
+                  <div class="col s10 m10 l11">
+
+                    <h5 onclick=''>Banned Words</h5>
+                    <i>Filter out messages containing words you don't like having blasted onto your eyes</i>
+
+                  </div>
+                </div>
+                <div class="row" id="autoMod_words_Expanded">
+                  <div class="col s12">
+                      
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <br><b>Excluded Channels</b><br>
+                          <i>Messages with banned words won't be deleted in these channels.</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <div class="input-field col s10" id="WordsExcludeCollection">
+                            <input hidden data-collection="WordsExcludeCollection" value="[]" id="WordsExclude" name="WordsExclude" type="text"><br>
+                            <div class="chip bold manager-yellow" data-modal="txt" data-target="WordsExcludeCollection" data-type="textChannel" onclick="addRole(this);"> + </div>
+                          </div>
+
+                        </div>  
+                      </div>  
+
+                      <div class="row">
+                        <div class="col s12 m12 l5 left-align offset-l1">
+
+                          <br><b>Word List</b><br>
+                          <i>These words will trigger it.</i>
+
+                        </div>
+                        
+                        <div class="col s12 m12 l6 left-align">
+
+                          <div class="input-field col s10" id="BannedWordCollection" style="margin-bottom: 15px">
+                            <input hidden data-collection="BannedWordCollection" value="[]" id="WordsList" name="WordsList" type="text"><br>
+                          </div>
+
+                          <input type="text" id="BadWordAdder" placeholder="Bad word goes here..." data-target="BannedWordCollection" data-type="string" onclick="addRoleSilent(this);">
+
+                          <script>
+                            $("#BadWordAdder").on('keyup', function (e) {
+                                if (e.keyCode == 13) {
+                                    if($("#BadWordAdder").val() != ""){
+
+                                      addSelected(this, 'string', true, true)
+                                      $("#BadWordAdder").val('');
+
+                                    }
+                                }
+                            });
+                          </script>
+
+                        </div>  
+                      </div>  
+
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+    <unsavedChanges />
+
+    <script>
+
+      $( document ).ready(function() {
+
+        $('[id$=_Expanded]').hide();
+
+        $('#autoMod_Invites').prop('checked', settings.autoMod.filters.invites.enabled).trigger('change');
+        $('#autoMod_BadLinks').prop('checked', settings.autoMod.filters.bad_links.enabled).trigger('change');
+        $('#autoMod_AllCaps').prop('checked', settings.autoMod.filters.all_caps.enabled).trigger('change'); 
+        $('#autoMod_ListBoost').prop('checked', settings.autoMod.filters.list_boost.enabled).trigger('change');
+        $('#autoMod_Mentions').prop('checked', settings.autoMod.filters.mass_ping.enabled).trigger('change');
+        $('#autoMod_GhostMentions').prop('checked', settings.autoMod.filters.ghost_ping.enabled).trigger('change');
+        $('#autoMod_words').prop('checked', settings.autoMod.filters.bad_words.enabled).trigger('change');
+
+        $('#AllCapsRange').val( settings.autoMod.filters.all_caps.caps_pct );
+        $('#MentionsRange').val( settings.autoMod.filters.mass_ping.max_pings );
+
+        //Excluded Channels
+        JSON.parse(settings.autoMod.filters.invites.excluded_channels).forEach( i => {
+          $('#InvitesExcludeCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="textChannel" onclick="removeChip(this)"></div>')
+        })          
+        JSON.parse(settings.autoMod.filters.bad_links.excluded_channels).forEach( i => {
+          $('#BadLinksExcludeCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="textChannel" onclick="removeChip(this)"></div>')
+        })          
+        JSON.parse(settings.autoMod.filters.all_caps.excluded_channels).forEach( i => {
+          $('#AllCapsExcludeCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="textChannel" onclick="removeChip(this)"></div>')
+        })          
+        JSON.parse(settings.autoMod.filters.mass_ping.excluded_channels).forEach( i => {
+          $('#MentionsExcludeCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="textChannel" onclick="removeChip(this)"></div>')
+        })          
+        JSON.parse(settings.autoMod.filters.ghost_ping.excluded_channels).forEach( i => {
+          $('#GhostMentionsExcludeCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="textChannel" onclick="removeChip(this)"></div>')
+        })            
+        JSON.parse(settings.autoMod.filters.bad_words.excluded_channels).forEach( i => {
+          $('#WordsExcludeCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="textChannel" onclick="removeChip(this)"></div>')
+        })  
+        JSON.parse(settings.autoMod.filters.bad_words.list).forEach( i => {
+          $('#BannedWordCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="string" onclick="removeChip(this)"></div>')
+        })  
+
+        updateChips();
+        SuspendUnsaved();
+              
+
+      });
+
+
+      $("form").submit(function(e) {
+
+         $.ajax({
+          type: "POST",
+          url: saveURL,
+          data: createSettingsObject(), // serializes the form's elements.    
+          dataType: 'json',
+          contentType: "application/json", // send as JSON
+          success: function(response)
+          {
+
+            Materialize.toast(response.message, 1000)
+            if(response.error == undefined){
+              $("#UnsavedChanges").slideUp("fast");
+            }
+          },
+          complete: function(data){
+            console.log(data);
+          }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      });
+
+      $(function() {
+        updateChips();
+      }); 
+    </script>
+
+
+    <div id="dialog-select-txt" class="modal bottom-sheet grey darken-4" style="overflow:visible">
+      <div class="modal-content">
+
+        <span>Select a Text Channel</span><br>
+
+        <div class="input-field col s8 offset-s2 center" style="z-index: 1000 !important;">
+
+          <select class="textChannel-filled" onchange="addSelected(this, 'textChannel', false)">
+            <option id="inputReset" value="NONE" disabled selected>Select a channel...</option>
+              <for(item in input.guild.channels.text)>
+                <option value="${item.id}"> ${item.name} </option>
+              </for>
+            </select>
+
+        </div>
+      </div>
+    </div>
+
+
+  </@content>
+</site-layout>

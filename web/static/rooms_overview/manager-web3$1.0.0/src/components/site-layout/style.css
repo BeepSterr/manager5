@@ -1,0 +1,351 @@
+
+body {
+  background: rgb(43,43,43) url('background.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.optgroup {
+	border-top:1px dashed #969696 !important;
+	margin-bottom: -20px !important;
+	padding-bottom: -20px !important;
+}
+.optgroup span {
+	line-height: 10px !important;
+	font-size: 12px !important;
+}
+
+.manager-yellow {
+  background-color: #FFD73A !important;
+}
+.manager-yellow-text {
+  color: #FFD73A !important;
+}
+
+.hidden {
+  width: 0px !important;
+}
+main {
+
+  flex: 1 0 auto;
+
+}
+
+img {
+  vertical-align:middle;
+}
+
+.brand-logo img {
+  height: 64px;
+}
+
+.account-icon {
+  margin-left: 50px;
+}
+
+.menu-item-small a {
+  font-size: 12px !important;
+}
+
+.userbar {
+  height: 50px;
+  display: none;
+  background-color: #2c2f33;
+  padding-top: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: right;
+  width: 100%;
+
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: auto;
+
+  vertical-align:middle;
+
+}
+
+.menuitem {
+  margin: 0px 20px;
+}
+.userbar i {
+  line-height: 50px;
+}
+
+.category-bar {
+  margin-top: 25px;
+  font-size: 125%;
+}
+
+table tbody tr {
+  transition: all 0.2s ease-in-out;
+}
+table tbody tr:hover {
+  background-color: rgba(0,0,0,0.2);
+}
+
+.category-bar a {
+  color: white;
+}
+
+.category-bar a:hover {
+  color: #00a2ff;
+}
+
+.userbar .icon {
+  border-radius: 100%;
+  height: 35px;
+  border: 2px solid #ffffff;
+  margin: 0px 5px;
+  margin-top: -20px;
+}
+
+.spacer {
+  margin: 10px;
+}
+
+.side-ad {
+  position: fixed;
+  top: calc(64px + 10%);
+  right: -200px;
+  height: calc(80% - 64px);
+  z-index: -1;
+}
+
+.grow { transition: all 0.2s ease-in-out; }
+.grow:hover { transform: scale(1.05); }
+
+.hidden {
+  display: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar:horizontal {
+  height: 4px;
+}
+
+.nomargin {
+  margin:0px !important;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #555; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #f1f1f1; 
+}
+
+.timeline {
+  position: relative;
+}
+
+.timeline .timeline-event {
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.timeline .timeline-event .timeline-content {
+  position: relative;
+  width: calc(50% - 50px);
+}
+
+.timeline .timeline-event::before {
+  display: block;
+  content: "";
+  width: 2px;
+  height: calc(50% - 30px);
+  position: absolute;
+  background: #d2d2d2;
+  left: calc(50% - 1px);
+  top: 0;
+}
+
+.timeline .timeline-event::after {
+  display: block;
+  content: "";
+  width: 2px;
+  height: calc(50% - 30px);
+  position: absolute;
+  background: #d2d2d2;
+  left: calc(50% - 1px);
+  top: calc(50% + 30px);
+}
+
+.timeline .timeline-event:first-child::before {
+  display: none;
+}
+
+.timeline .timeline-event:last-child::after {
+  display: none;
+}
+
+.timeline .timeline-event:nth-child(even) .timeline-content {
+  margin-left: calc(50% + 50px);
+}
+
+.timeline .timeline-event:nth-child(odd) .timeline-content {
+  margin-left: 0;
+}
+
+.timeline .timeline-badge {
+  display: block;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #d2d2d2;
+  top: calc(50% - 20px);
+  right: calc(50% - 20px);
+  border-radius: 50%;
+  text-align: center;
+  cursor: default;
+}
+
+.timeline .timeline-badge i {
+  font-size: 25px;
+  line-height: 40px;
+}
+
+@media (max-width: 600px) {
+  .timeline .timeline-event .timeline-content {
+    width: calc(100% - 70px);
+  }
+  .timeline .timeline-event::before {
+    left: 19px;
+  }
+  .timeline .timeline-event::after {
+    left: 19px;
+  }
+  .timeline .timeline-event:nth-child(even) .timeline-content {
+    margin-left: 70px;
+  }
+  .timeline .timeline-event:nth-child(odd) .timeline-content {
+    margin-left: 70px;
+  }
+  .timeline .timeline-badge {
+    left: 0;
+  }
+}
+
+.itemnotify {
+  padding: 2px 10px;
+  border-radius: 3px;
+  margin-left: 10px;
+}
+
+input[type=text] {
+  background-color: #333333 !important;
+  border-radius: 5px !important;
+  padding: 0px 10px !important;
+  border:1px solid #0d0d0d !important;
+}
+
+input[type=text]:focus {
+  background-color: #333333 !important;
+  border:1px solid #FFD73A !important;
+  box-shadow: 0 0px 0 0 red !important;
+}
+textarea{
+  background-color: #333333 !important;
+  border-radius: 5px !important;
+  padding: 0px 10px !important;
+  border:1px solid #0d0d0d !important;
+}
+
+textarea:focus {
+  background-color: #333333 !important;
+  border:1px solid #FFD73A !important;
+  box-shadow: 0 0px 0 0 red !important;
+}
+
+ul.dropdown-content.select-dropdown li span {
+  color: #FFFFFF;
+}
+
+ul.dropdown-content.select-dropdown {
+  background-color: #333333;
+  border-radius: 5px;
+  border:1px solid #FFD73A !important;
+}
+
+
+.m-accent {
+  background-color: #FFD73A !important;
+}
+.m-accent-text {
+  color: #FFD73A !important;
+}
+.m-dark {
+ background-color: #333 !important;;
+}
+.m-dark-text {
+ color: #333 !important;
+}
+
+.m-accent-text label{
+  color: #FFD73A !important;
+}
+
+.m-dark-text label{
+ color: #333 !important;
+}
+
+[type="radio"]:checked + label:after,
+[type="radio"].with-gap:checked + label:after {
+  background-color: #FFD73A;
+  border-color: #333 !important;
+}
+
+[type="radio"]:checked + label:after {
+  transform: scale(1.02);
+}
+
+.character-counter {
+  margin-top: -15px;
+  z-index: 100;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 5px;
+  background: #333;
+  border:1px solid black !important;
+  border-radius: 3px;
+}
+
+input[type=range] {
+  border:1px solid #333 !important;
+}
+input[type=range]::-webkit-slider-thumb {
+  background-color: #FFD73A;
+}
+input[type=range]::-moz-range-thumb {
+  background-color: #FFD73A;
+}
+input[type=range]::-ms-thumb {
+  background-color: #FFD73A;
+}
+
+/***** These are to edit the thumb and the text inside the thumb *****/
+input[type=range] + .thumb {
+  background-color: #333;
+}
+input[type=range] + .thumb.active .value {
+  color: #FFD73A;
+}

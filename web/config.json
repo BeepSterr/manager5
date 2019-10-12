@@ -1,0 +1,16 @@
+{
+    "auth": {
+        "clientID":         "xxx",
+        "clientSecret":     "xxx",
+        "callbackURL":      "http://managerbot.me/auth/verify",
+        "internalKey":       "xxx"
+    },
+    
+    "mysql": {
+        "hostname": "0.0.0.0",
+        "hostport": "3306",
+        "username": "",
+        "password": "",
+        "database": ""
+    }
+}

@@ -1,0 +1,1 @@
+$_mod.run("/manager-web3$1.0.0/src/routes/admin_cp/index.marko.init");

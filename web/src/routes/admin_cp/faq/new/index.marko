@@ -1,0 +1,71 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/acp" class="breadcrumb">ACP</a>
+          <a href="/acp/faq" class="breadcrumb">FAQ</a>
+          <a href="/acp/faq/new" class="breadcrumb">new</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+    <div class="row center">
+      <div class="col offset-s0 offset-l1 l3 center">
+
+        <acpnav/>
+
+      </div>
+      <div class="col l7 left-align">
+      
+      <br><br>
+      <h4>FAQ - New Post</h4>
+        <form action="/api/acp/faq/create" method="POST">
+
+          <div class="row">
+            <div class="input-field col s12">
+              <span>Post Title</span>
+              <input required id="pTitle" name="pTitle" type="text" class="validate">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="row">
+              <div class="input-field col s12">
+                <span>Post Description</span>
+                <textarea id="pDesc" name="pDesc" class="materialize-textarea"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row">
+              <div class="input-field col s12">
+                <span>Post Content (Markdown)</span>
+                <textarea id="pContent" name="pContent" class="materialize-textarea"></textarea>
+              </div>
+            </div>
+
+            <button class="btn waves-effect waves-light" type="submit" name="action" >Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+
+      <script>
+        sseditor = new SimpleMDE({ element: document.getElementById("pContent"), forceSync: true, spellChecker: false, toolbar: ["bold", "italic", "strikethrough", "heading", "|", "quote", "code", "table", "|", "image", "link", "|", "preview", "fullscreen"], });
+      </script>
+
+    </div>
+
+
+  </@content>
+</site-layout>

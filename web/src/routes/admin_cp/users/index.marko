@@ -1,0 +1,99 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/acp" class="breadcrumb">ACP</a>
+          <a href="/acp/users" class="breadcrumb">users</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+
+    <div class="row center">
+      <div class="col offset-s0 offset-l1 l3 center">
+
+        <acpnav/>
+
+      </div>
+      <div class="col l7 left-align">
+
+          <br><br>
+          <h4>Users</h4>
+
+          <script>
+
+            var lastTerm = "";        
+
+            function searchUsers( elem ) {
+
+              var E = $(elem);
+              if(E.val() == lastTerm){ return; }
+
+              lastTerm = E.val()
+
+              $.ajax({
+                dataType: "json",
+                url: '/api/acp/searchUser?term=' + lastTerm,
+                success: (data)=>{
+
+                  var target  = $('#searchResults')
+                  var members = JSON.parse(data);
+
+                  target.html('');
+                  members.forEach( member => {
+                    console.log(member)
+                    $('#searchResults').append(`
+            <div class="col s12">
+              <div class="card-panel grey lighten-5 z-depth-1">
+                <img src="/static/manager-web3$1.0.0/src/components/userbar/unknown_server.png" alt="" class="left-align circle" height="45px" style="margin-right: 20px; vertical-align:middle;"> <!-- notice the "circle" class -->
+                <span class="black-text left-align" style="font-size: 120%; line-height:45px;">
+                  `+member.known_name+`
+                </span>                
+                <span class="black-text right" style="line-height:45px;">
+                  <a href="/acp/user/`+member.user+`" class="waves-effect btn-flat grey-text text-lighten-1"><i class="material-icons">edit</i></a>
+                </span>
+              </div>
+            </div>
+                            `)
+                  })
+
+                }
+              });
+
+            }
+
+            setInterval( ()=>{
+              searchUsers( $('#search') )
+            },1000)
+
+          </script>
+
+          <nav class="grey darken-3">
+            <div class="nav-wrapper">
+              <form>
+                <div class="input-field">
+                  <input onchange="searchUsers(this);" onsubmit="e.preventDefault();" id="search" type="search" required>
+                  <label class="label-icon" for="search" style="margin-top: -10px;"><i class="large material-icons">search</i></label>
+                  <i class="material-icons">close</i>
+                </div>
+              </form>
+            </div>
+          </nav>
+
+          <div id="searchResults" style="padding: 50px">
+
+          </div>
+
+      </div>
+    </div>
+
+
+  </@content>
+</site-layout>

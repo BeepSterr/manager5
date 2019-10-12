@@ -1,0 +1,51 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/acp" class="breadcrumb">ACP</a>
+          <a href="/acp/users" class="breadcrumb">users</a>
+          <a href="/acp/user/${input.target_user.id}" class="breadcrumb"> ${input.target_user.name} </a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+
+    <div class="row center">
+      <div class="col offset-s0 offset-l1 l3 center">
+
+        <acpnav/>
+
+      </div>
+      <div class="col l7 left-align">
+
+          <br><br>
+          <h4>User - ${input.target_user.name} </h4>
+
+          <iframe src="/user/${input.target_user.id}" width="100%" height="500px"></iframe><br><p>Actions:</p>
+
+          <if(input.target.ban_content == 0)>
+            <a class="waves-effect waves-light btn red" href="/api/acp/user/ban/${ input.target_user.id }" >Content Ban</a>
+          </if>
+          <else>
+            <a class="waves-effect waves-light btn green" href="/api/acp/user/unban/${ input.target_user.id }" >Undo Content Ban</a>
+          </else>
+          
+          <i class="spacer"></i>
+          <a class="waves-effect waves-light btn orange" href="/api/acp/user/clearb/${ input.target_user.id }" >Clear Bio</a>
+
+          <i class="spacer"></i>
+          <a class="waves-effect waves-light btn orange" href="/api/acp/user/clears/${ input.target_user.id }" >Clear Stickers</a>
+
+      </div>
+    </div>
+
+
+  </@content>
+</site-layout>

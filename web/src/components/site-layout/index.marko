@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="Create Private Rooms, Automatically moderate & Way more in 10+ Languages!"/>
+  <meta name="theme-color" content="#3a3a3a">
+
+  <!-- Icons -->
+  <link rel="icon" sizes="192x192" href="./logo.png">
+
+  <title><include(input.title)/></title>
+
+  <link type="text/css" rel="stylesheet" href="./materialize.css"  media="screen,projection"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="./simplemde.min.css" rel="stylesheet">
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-51438158-10');
+  </script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="./jquery-ui.js"></script>
+  <script type="text/javascript" src="./pre-init.js"></script>
+  <script type="text/javascript" src="./materialize.js"></script>
+  <script type="text/javascript" src="./simplemde.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js"></script>
+  
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-5767206191697237",
+          enable_page_level_ads: true
+     });
+</script>
+
+</head>
+<body class="white-text">
+<include(input.crumbs)/>
+
+  <header>
+    <nav class="z-depth-0 grey darken-4">
+      <div class="nav-wrapper" style="padding-left: 25px; padding-right: 25px;">
+
+        <a href="/" class="brand-logo"><img src="./logo.png" alt="Manager Logo" style="margin-right: 25px;"/><span class="hide-on-small-only"><include(input.title)/></span></a>
+
+        <ul id="nav-desktop hide-on-med-and-down" class="right">
+          <li class="hide-on-med-and-down"><a href="/faq">FAQ</a></li>
+          <li class="hide-on-med-and-down"><a href="/commands">Commands</a></li>
+          <li class="hide-on-med-and-down"><a href="https://www.patreon.com/BeepSterr" target="_blank">Patreon</a></li>
+          <li class="hide-on-med-and-down"><a href="/support">Support Server</a></li>
+          <li class="account-icon hide-on-med-and-down"><a onclick="$('.userbar').slideToggle('slow'); toggleAccountIcon();">Servers<i class="material-icons right">keyboard_arrow_down</i></a></li>
+        </ul>
+
+        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+
+        <ul id="nav-mobile" class="side-nav">
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/commands">Commands</a></li>
+          <li><a href="https://www.patreon.com/BeepSterr" target="_blank">Patreon</a></li>
+          <li><a href="/support">Support Server</a></li>
+          <li class="account-icon nomargin"><a onclick="$('.userbar').slideToggle('slow'); toggleAccountIcon(); $('#nav-mobile').sideNav('hide');">Servers<i class="material-icons right">keyboard_arrow_down</i></a></li>
+        </ul>
+
+      </div>
+    </nav>
+
+  </header>
+
+  <main>
+
+    <div id="userBarContent">
+
+    </div>
+
+    <include(input.content)/>
+
+  </main>
+
+  <footer class="page-footer grey darken-4">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">Manager</h5>
+          <p class="grey-text text-lighten-4">Make your server dynamic, Let Manager do the hard work so you can keep doing whatever you're doing. </p>
+        </div>
+
+        <div class="col l3 s6">
+          <h5 class="white-text">Links</h5>
+          <ul>
+            <li><a class="grey-text text-lighten-3" href="/invite">Invite Manager</a></li>
+            <li><a class="grey-text text-lighten-3" href="http://github.com/nioxed/manager-lang">Translate</a></li>
+            <li><a class="grey-text text-lighten-3" href="/credits">Credits</a></li>
+          </ul>
+        </div>
+
+        <div class="col l3 s6">
+          <h5 class="white-text">Media</h5>
+          <ul>
+            <li><a class="grey-text text-lighten-3" href="https://twitter.com/DiscordManager">Twitter</a></li>
+            <li><a class="grey-text text-lighten-3" href="https://www.patreon.com/BeepSterr">Patreon</a></li>
+            <li><a class="grey-text text-lighten-3" href="/support">Support Server</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+        © 2017-2018 Manager Bot
+        <a class="right white-text" href="http://status.managerbot.me">Status</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.2/randomColor.min.js"></script>
+  <script type="text/javascript" src="./moment.js"></script>
+  <script type="text/javascript" src="./init.js"></script>
+
+  </body>
+
+</html>

@@ -1,0 +1,99 @@
+<site-layout>
+  <@title>
+    Commands
+  </@title>  
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/commands" class="breadcrumb">Commands</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+        <script>
+
+          commands = ${ JSON.stringify(input.commands) }
+          categories = [];
+
+          $(document).ready( ()=>{
+            commands.forEach ( ( command )=>{
+
+              if( !categories.includes(command.category) )
+                categories.push(command.category);
+
+              $('#commands tr:last').after('<tr class="commanditem cat-'+command.category+'"><td>'+command.example+'</td><td>'+command.permissionLevel+'</td><td>'+command.description+'</td><td>'+command.category+'</td><td>'+command.dm+'</td></tr>');
+
+            })
+
+
+            $.each(categories,function(key, value) {
+
+              $('.command-category-select').append('<option value=' + value + '> ' + value + '</option>');
+
+            });
+          });
+
+          function updateHidden(){
+
+            var selectedVal = $('#hidden-cats').val();
+            console.log(selectedVal)
+
+
+            $('.commanditem').hide()
+            $('.cat-' + selectedVal).show()
+
+            if(selectedVal == "DISPLAY_ALL"){
+              $('.commanditem').show()
+            }
+
+          }
+
+
+
+        </script>
+
+        <div class="center container row">
+
+          <br><br>
+
+          <div class="input-field col s12">
+            <select id="hidden-cats" class="command-category-select" onchange="updateHidden();">
+              <option value="DISPLAY_ALL" selected>All Commands</option>
+            </select>
+            <label>Command Category Select</label>
+          </div><br><br>
+
+          <span class="gray-text">The default prefix for manager is <span class="red-text">m!</span>. Find out the custom prefix by typing <span class="red-text">@Manager</span></span><br>
+          <span class="gray-text">Arguments inside < > are required, Arguments inside [ ] are optional.</span><br>
+
+          <br><br>
+
+          <div class="col s12">
+
+            <table id="commands">
+              <thead>
+                <tr>
+                    <th>Command</th>
+                    <th>Rank</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Where</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+
+  </@content>
+</site-layout>

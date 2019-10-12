@@ -1,0 +1,72 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@content>
+
+    <script>console.log( ${ JSON.stringify(input.guild) } )</script>
+	
+    <div class="container" id="welcomer">
+
+      <br><br>
+
+      <h1> <!--<img class="icon" src="https://cdn.discordapp.com/icons/${ input.guild.id }/${ input.guild.icon }.jpg">--> ${ input.guild.name } </h1>
+      <span class="guild-id">Server ID: ${ input.guild.id }</span>
+
+      <br><br>
+
+      <div class="right quickitems">
+
+        <!--<a class="waves-effect waves-light btn-flat white-text">Audit Log+ <span class="itemnotify blue">4</span></a>-->
+
+      </div><br><br>
+
+      <div class="module-list row">
+
+        <div class="col s12 m12 l6">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Manager</span>
+              <p>Disable certain commands, MISC Features</p><br>
+              <a href="./server/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m12 l6">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Private Rooms</span>
+              <p>Allow members to create their own temporary rooms!</p><br>
+              <a href="./rooms/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m12 l6">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Event Logs</span>
+              <p>Log actions on your server to text channels!</p><br>
+              <a href="./logs/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m12 l6">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Analytics</span>
+              <p>See what parts of your server are the most active!</p><br>
+              <a href="./analytics/view" class="waves-effect waves-light btn-flat">View Analytics</a>
+              <a href="./analytics/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </@content>
+</site-layout>

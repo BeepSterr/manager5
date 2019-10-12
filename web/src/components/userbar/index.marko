@@ -1,0 +1,35 @@
+<div class="userbar">
+
+    <if(input.isAuth == true)>
+
+        <for(item in input.guilds)>
+
+            <a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip=" ${ item.name } " href="/g/${ item.id }">
+                <img class="icon" src="${ item.icon }">
+            </a>
+
+        </for>
+
+        <a href="/invite" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Invite manager">
+            <img class="icon" src="./add_server.png">
+            <img class="icon" style="width:0px;height:0px;position:fixed;top:-999px;display:none;" src="./unknown_server.png">
+        </a>
+        
+        <i class="spacer"></i>
+
+        <a href="/user/${ input.user.id }" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip=" ${ input.user.username } ">
+            <img class="icon" src="https://cdn.discordapp.com/avatars/${ input.user.id }/${ input.user.avatar}.jpg">
+        </a>
+
+    </if>
+    <else>
+
+        <a href="/auth" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip=" Login ">
+            <img class="icon" src="./add_server.png">
+        </a>
+
+        <i class="spacer"></i>
+
+    </else>
+
+</div>

@@ -1,0 +1,677 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/g/${ input.guild.id }" class="breadcrumb">${ input.guild.name }</a>
+          <a href="/g/${ input.guild.id }/rooms/edit" class="breadcrumb">Private Rooms</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+  
+    <script>
+
+      editor = true;
+    
+      guild = ${ JSON.stringify(input.guild) };
+      settings = ${ JSON.stringify(input.settings) };
+      try { settings.logs = JSON.parse(settings.logging); }catch(ex){ settings.logs = {}; }
+
+      settings.roomsWhitelist   = JSON.parse(settings.roomsWhitelist);
+      settings.roomsBlacklist   = JSON.parse(settings.roomsBlacklist);
+      
+      settings.roomsPermissions = JSON.parse(settings.roomsPermissions);
+      settings.roomsDefaults = JSON.parse(settings.roomsDefaults);
+
+      saveURL = '/api/guild/'+guild.id+'/submitChanges/rooms'
+      //saveURL = 'https://rqbintt.herokuapp.com/usidk6us'
+
+      function createSettingsObject(){
+
+          var result = {}
+          
+          result.enable = getBool('roomsEnable');
+          
+          result.room_defaults_name             = $('#room_defaults_name').val();
+          result.room_defaults_nsfw             = getBool('room_defaults_nsfw');
+          result.room_defaults_links            = getBool('room_defaults_links');
+          result.room_defaults_ptt              = getBool('room_defaults_ptt');
+          result.room_defaults_member_limit     = Number($('#room_defaults_member_limit').val());
+          result.room_defaults_files            = getBool('room_defaults_files');
+          result.room_defaults_bitrate          = Number($('#room_defaults_bitrate').val());
+          result.room_defaults_unlock           = getBool('rooms_defaults_unlock');
+
+          result.roomsWhitelist                 = $('#roomsWhitelist').val();
+          result.roomsBlacklist                 = $('#roomsBlacklist').val();
+
+          result.category_text                  = $('#rooms_category_text').val();
+          result.category_voice                 = $('#rooms_category_voice').val();
+
+          result.roomsInactiveTimer             = $('#roomsInactiveTimer').val();
+          result.roomsSummonChannel             = $('#roomsSummonChannel').val();
+
+          result.rooms_perms_nsfw               = getBool('rooms_perms_nsfw');
+          result.rooms_perms_members            = getBool('rooms_perms_members');
+          result.rooms_perms_bitrate            = getBool('rooms_perms_bitrate');
+          result.rooms_perms_speaker            = getBool('rooms_perms_speaker');
+          result.rooms_perms_embed              = getBool('rooms_perms_embed');
+          result.rooms_perms_name               = getBool('rooms_perms_name');
+          result.rooms_perms_unlock             = getBool('rooms_perms_unlock');
+          result.rooms_perms_ptt                = getBool('rooms_perms_ptt');
+          result.rooms_perms_files              = getBool('rooms_perms_files');
+
+          result.roomsBots                      = getBool('roomsBots');
+          result.roomsVisiblity                 = getBool('roomsVisible');
+
+          result.roomsType                      = getRadio('roomType')
+
+        return JSON.stringify(result);
+
+      }
+    
+    </script>
+	
+    <div class="container" id="welcomer">
+
+      <br><br>
+
+      <h1> <a class="yellow-text" href="/g/${ input.guild.id }/"><</a> ${ input.guild.name } </h1>
+      <span class="guild-id">Private Rooms - Settings</span>
+
+    </div>
+
+
+	
+    <div class="container" id="config-content">
+
+      <form method="POST">
+
+        <div id="rooms-toggle">
+
+          <br><br>
+
+          <div class="row">
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Enable Rooms</h5>
+              <i>Enable this module, Members with access can create their own private channels.</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="switch">
+                <label>
+                  Off
+                  <if(input.settings.roomsEnabled)>
+                    <input type="checkbox" id="roomsEnable" name="roomsEnable" checked>
+                  </if><else>
+                    <input type="checkbox" id="roomsEnable" name="roomsEnable">
+                  </else>
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
+
+            </div>  
+          </div>
+
+        </div>
+
+        <hr>
+
+        <div id="rooms-settings">
+
+          <div class="row">
+            <br>
+            <div class="col s12">
+
+              <h5>Room Type</h5>
+              <i>
+                What types of channels should be attached to the room?
+              </i>
+
+            </div>
+          </div>
+
+          <div class="row">
+            
+            <div class="col s12">
+              
+              <br>
+
+              <div class="col s12 m4">
+                <div class="card-panel m-dark clickable">
+                  <input name="roomType" type="radio" id="VOICE" value="VOICE" />
+                  <label>Voice</label>
+                </div>
+              </div>
+              <div class="col s12 m4">
+                <div class="card-panel m-dark clickable">
+                  <input name="roomType" type="radio" id="TEXT" value="TEXT" />
+                  <label>Text</label>
+                </div>
+              </div>
+              <div class="col s12 m4">
+                <div class="card-panel m-dark clickable">
+                  <input name="roomType" type="radio" id="BOTH" value="BOTH" />
+                  <label>Voice & Text</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div id="rooms-details">
+          
+          <div class="row">
+            <br>
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Visibility</h5>
+              <i>Should rooms be visible to those who can't join them?</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="switch">
+                <label>
+                  Off
+                  <if(input.settings.roomsDefaults.visible == true)>
+                    <input type="checkbox" id="roomsVisible" name="roomsVisible" checked>
+                  </if><else>
+                    <input type="checkbox" id="roomsVisible" name="roomsVisible">
+                  </else>
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
+              <br><br>
+            </div>  
+          </div>   
+          
+          <hr>
+          
+          <div class="row">
+            <br>
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Bots</h5>
+              <i>Should we add any bots on the server to the room?</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="switch">
+                <label>
+                  Off
+                  <if(input.settings.roomsDefaults.bots)>
+                    <input type="checkbox" id="roomsBots" name="roomsBots" checked>
+                  </if><else>
+                    <input type="checkbox" id="roomsBots" name="roomsBots">
+                  </else>
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
+              <br><br>
+            </div>  
+          </div>
+  
+          <hr>
+
+          <div class="row">
+            <br>
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Lobby Channel</h5>
+              <i>Select a voice channel to act as a lobby for private rooms, When a user joins this channel. A room will be assigned to them. (Will only work with Voice / Voice & Text Rooms)</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="input-field col s12">
+                <select id="roomsSummonChannel" name="roomsSummonChannel" class="voice-channel-select">
+                  <option value="NONE" selected >No Channel</option>
+                </select>
+              </div>
+
+            </div>  
+          </div>
+
+          <hr>
+
+          <div class="row">
+            <br>
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Idle Limit</h5>
+              <i>How long should rooms remain empty / inactive before being deleted?</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="input-field col s12">
+                <select id="roomsInactiveTimer" name="roomsInactiveTimer">
+                  <option value="0" disabled selected>Choose your option</option>
+                  <option value="30">30 Seconds</option>
+                  <option value="60">1 Minute</option>
+                  <option value="300">5 Minutes</option>
+                  <option value="1800">30 Minutes</option>
+                  <option value="3600">1 Hour</option>
+                  <option value="43200">12 Hours</option>
+                  <option value="86400">1 Day</option>
+                  <option value="604800">1 Week</option>
+                  <option value="-1">Indefinetly</option>
+                </select>
+              </div>
+
+            </div>  
+          </div>
+        </div>
+
+        <hr>
+
+        
+        <div id="rooms-default">
+          <div class="row">
+            <div class="col s12">
+
+              <h5>Room Permissions</h5>
+              <i>Control Exactly who can create / modify rooms</i>
+
+              <br><br>
+
+            </div>
+  
+
+          </div>
+          <div class="row">
+            <div class="col s12 m6">
+
+              <div class="row">
+                Whitelisted Roles (Can Summon):<br>
+                <div class="input-field col s10" id="whitelistCollection">
+                  <input hidden data-collection="whitelistCollection" value="[]" id="roomsWhitelist" name="roomsWhitelist" type="text"><br>
+                  <div class="chip bold manager-yellow" data-target="whitelistCollection" data-type="role" onclick="addRole(this);"> + </div>
+                  <!--<div class="chip chip-item" data-item-id="462857903687073802" onclick="removeChip(this)"></div> -->
+
+                </div>
+              </div>
+            </div>
+            <div class="col s12 m6">
+              <div class="row">
+                Blacklisted Roles (Cannot Summon:<br>
+                <sub class="left">Takes priority over whitelist.</sub>
+                <div class="input-field col s10" id="blacklistCollection">
+                  <input hidden data-collection="blacklistCollection" value="[]" id="roomsBlacklist" name="roomsBlacklist" type="text"><br>
+                  <div class="chip bold manager-yellow" data-target="blacklistCollection" data-type="role" onclick="addRole(this);"> + </div>
+                    <!--<div class="chip chip-item" data-item-id="445308505696632840" onclick="removeChip(this)"></div>  -->
+                  </div>
+              </div>
+
+              <script> 
+                $(function() {
+                  updateChips();
+                }); 
+              </script>
+
+                <!-- Modal Structure -->
+                <div id="dialog-select" class="modal bottom-sheet grey darken-4" style="overflow:visible">
+                  <div class="modal-content">
+                    <div class="input-field col s12" style="z-index: 1000 !important;">
+                      <select class="role-filled" onchange="addSelected(this, 'role', false)">
+                        <option id="inputReset" value="NONE" disabled selected>Select a role...</option>
+                        <for(item in input.guild.roles)>
+                          <option style="color: #${item.color};" data-icon="/api/color/${item.color}" value="${item.id}"> ${item.name}</option>
+                        </for>
+                      </select>
+                      <label>Add A Role</label>
+                    </div>
+                  </div>
+                </div>
+          
+
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div id="rooms-default">
+          <div class="row">
+            <div class="col s12">
+
+              <h5>Room Customization</h5>
+              <i>Check the items you want members to be able to change</i>
+
+              <br><br>
+
+            </div>
+          </div>
+          <div class="row">
+
+            <div class="col s12">
+
+              <div class="card-panel m-dark white-text">
+                <h5>Both Channels</h5>
+                  
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_name" name="rooms_perms_name" />
+                    <label for="rooms_perms_name" class="white-text" >Channel Name</label>
+                  </p>          
+
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_unlock" name="rooms_perms_unlock" />
+                    <label for="rooms_perms_unlock" class="white-text" >Locking / Unlocking</label>
+                  </p>
+
+              </div>
+            </div>
+
+            <div class="col s12 m6 l6">
+
+
+              <div class="card-panel m-dark white-text">
+                <h5>Voice Channel</h5>
+                  
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_ptt" name="rooms_perms_ptt" />
+                    <label for="rooms_perms_ptt" class="white-text" >Push To Talk</label>
+                  </p>   
+
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_bitrate" name="rooms_perms_bitrate" />
+                    <label for="rooms_perms_bitrate" class="white-text" >Bitrate</label>
+                  </p>
+                  
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_members" name="rooms_perms_members" />
+                    <label for="rooms_perms_members" class="white-text" >Member Limit</label>
+                  </p>  
+
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_speaker" name="rooms_perms_speaker" />
+                    <label for="rooms_perms_speaker" class="white-text" >Priority Speakers</label>
+                  </p>
+
+                </div>
+              </div>
+
+            <div class="col s12 m6 l6">
+              
+              <div class="card-panel m-dark white-text">
+                <h5>Text Channel</h5>
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_files" name="rooms_perms_files" />
+                    <label for="rooms_perms_files" class="white-text" >File Uploads</label>
+                  </p>
+                  
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_embed" name="rooms_perms_embed" />
+                    <label for="rooms_perms_embed" class="white-text" >Link Embeds</label>
+                  </p>
+                  
+                  <p>
+                    <input type="checkbox" class="checkbox-manager" id="rooms_perms_nsfw" name="rooms_perms_nsfw" />
+                    <label for="rooms_perms_nsfw" class="white-text" >NSFW Tag</label>
+                  </p>
+
+                </div>
+              </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div id="rooms-default">
+
+          <div class="row">
+            <div class="col s12">
+
+              <h5>Room Defaults</h5>
+              <i>The default values for your server.</i>
+
+              <br><br>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12">
+
+
+              <div class="card-panel m-dark white-text">
+                <h5>Both Channels</h5>
+
+                <sub>Channel Name</sub>
+                <input placeholder="Private Rooms [{user}]" id="room_defaults_name" name="room_defaults_name" type="text" class="validate">
+                  
+                <p>
+                  <input type="checkbox" class="checkbox-manager" id="rooms_defaults_unlock" name="rooms_defaults_unlock" />
+                  <label for="rooms_defaults_unlock" class="white-text" >Start Unlocked</label>
+                </p>
+
+              </div>
+
+
+            </div>
+            <div class="col s12 m6 l6">
+
+              <div class="card-panel m-dark white-text">
+                <h5>Voice Channel</h5>
+                <br>
+
+                <sub>Channel Category</sub>
+                  <select class="category-channel-select" id="rooms_category_voice" name="rooms_category_voice">
+                    <option value="NONE">No Category</option>
+                  </select>
+                <br>
+
+                <div class="row">
+
+                  <div class="col s6 m6 l8">
+                    Push To Talk
+                  </div>
+                  <div class="col s6 m6 l4 right-align">
+                    <div class="switch">
+                      <label>
+                        No
+                        <input type="checkbox" id="room_defaults_ptt" name="room_defaults_ptt">
+                        <span class="lever"></span>
+                        Yes
+                      </label>
+                    </div>
+                  </div>
+                  <br><br>
+                  
+                </div>
+
+                <p class="range-field">
+                  <span>Member Limit:</span>
+                  <input type="range" id="room_defaults_member_limit" name="room_defaults_member_limit" min="0" max="99" />
+                </p>  
+
+                <p class="range-field">
+                  <span>Bitrate: (x1000)</span>
+                  <input type="range" id="room_defaults_bitrate" name="room_defaults_bitrate" min="8" max="96" />
+                </p>
+
+              </div>
+            </div>
+
+            <div class="col s12 m6 l6">
+
+
+              <div class="card-panel m-dark white-text">
+                <h5>Text Channel</h5>
+                <br>
+
+                <sub>Channel Category</sub>
+                <select class="category-channel-select" id="rooms_category_text" name="rooms_category_text">
+                    <option value="NONE">No Category</option></select>
+                <br>
+                <div class="row">
+
+                  <div class="col s6 m6 l8">
+                    NSFW Flag
+                  </div>
+                  <div class="col s6 m6 l4 right-align">
+                    <div class="switch">
+                      <label>
+                        No
+                        <input type="checkbox" id="room_defaults_nsfw" name="room_defaults_nsfw">
+                        <span class="lever"></span>
+                        Yes
+                      </label>
+                    </div>
+                  </div>
+                  <br>
+                  
+                </div>
+
+                <div class="row">
+
+                  <div class="col s6 m6 l8">
+                    Allow Files
+                  </div>
+                  <div class="col s6 m6 l4 right-align">
+                    <div class="switch">
+                      <label>
+                        No
+                        <input type="checkbox" id="room_defaults_files" name="room_defaults_files">
+                        <span class="lever"></span>
+                        Yes
+                      </label>
+                    </div>
+                  </div>
+                  <br>
+                  
+                </div>
+
+                <div class="row">
+
+                  <div class="col s6 m6 l8">
+                    Allow Link Embeds
+                  </div>
+                  <div class="col s6 m6 l4 right-align">
+                    <div class="switch">
+                      <label>
+                        No
+                        <input type="checkbox" id="room_defaults_links" name="room_defaults_links">
+                        <span class="lever"></span>
+                        Yes
+                      </label>
+                    </div>
+                  </div>
+                  <br>
+                  
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+          
+      </form>
+
+      <unsavedChanges />
+
+      <script>
+
+      $( document ).ready(function() {
+          
+        //roomsEnable
+         $('#roomsEnable').prop('checked', settings.roomsEnabled )     
+         $('#roomsBots').prop('checked', settings.roomsDefaults.bots )   
+         $('#roomsVisible').prop('checked', settings.roomsDefaults.visible )          
+         
+         //RoosmType
+         if( settings.roomsType == "VOICE" ) $('#VOICE').prop('checked', true);         
+         if( settings.roomsType == "TEXT" ) $('#TEXT').prop('checked', true);   
+         if( settings.roomsType == "BOTH" ) $('#BOTH').prop('checked', true);   
+
+        //roomsPermissions
+        settings.roomsWhitelist.forEach( i => {
+          $('#whitelistCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="role" onclick="removeChip(this)"></div>')
+        })        
+        settings.roomsBlacklist.forEach( i => {
+          $('#blacklistCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="role" onclick="removeChip(this)"></div>')
+        })
+
+        // Room Permissions
+        $('#rooms_perms_name').prop('checked', settings.roomsPermissions.name); 
+        $('#rooms_perms_members').prop('checked', settings.roomsPermissions.memberlimit); 
+        $('#rooms_perms_bitrate').prop('checked', settings.roomsPermissions.bitrate); 
+        $('#rooms_perms_ptt').prop('checked', settings.roomsPermissions.ptt); 
+        $('#rooms_perms_embed').prop('checked', settings.roomsPermissions.embeds); 
+        $('#rooms_perms_files').prop('checked', settings.roomsPermissions.files); 
+        $('#rooms_perms_nsfw').prop('checked', settings.roomsPermissions.nsfw); 
+        $('#rooms_perms_speaker').prop('checked', settings.roomsPermissions.speaker); 
+        $('#rooms_perms_unlock').prop('checked', settings.roomsPermissions.allowLock); 
+
+
+        // Room Defaults
+        $('#room_defaults_name').val(settings.roomsDefaults.name); 
+
+        $('#room_defaults_member_limit').val(settings.roomsDefaults.memberlimit); 
+        $('#room_defaults_bitrate').val(settings.roomsDefaults.bitrate); 
+        $('#room_defaults_ptt').prop('checked', settings.roomsDefaults.ptt); 
+        $('#rooms_defaults_unlock').prop('checked', settings.roomsDefaults.startUnlock); 
+
+        $('#room_defaults_embed').prop('checked', settings.roomsDefaults.embeds); 
+        $('#room_defaults_files').prop('checked', settings.roomsDefaults.files); 
+        $('#room_defaults_nsfw').prop('checked', settings.roomsDefaults.nsfw); 
+
+        $('select[name=rooms_category_voice]').val(settings.roomsCategory)
+        $('select[name=rooms_category_text]').val(settings.roomsCategoryText)
+
+        $('select[name=roomsInactiveTimer]').val(settings.roomsInactiveTimer)
+        $('select[name=roomsSummonChannel]').val(settings.roomsSummonChannel)
+
+        $('select').material_select();
+
+      });
+
+
+      $("form").submit(function(e) {
+
+         $.ajax({
+          type: "POST",
+          url: saveURL,
+          data: createSettingsObject(), // serializes the form's elements.    
+          dataType: 'json',
+          contentType: "application/json", // send as JSON
+          success: function(response)
+          {
+
+            Materialize.toast(response.message, 1000)
+            if(response.error == undefined){
+              $("#UnsavedChanges").slideUp("fast");
+            }
+          },
+          complete: function(data){
+            console.log(data);
+          }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      });
+
+      </script>
+    </div>
+
+  </@content>
+</site-layout>

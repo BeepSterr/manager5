@@ -1,0 +1,369 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/g/${ input.guild.id }" class="breadcrumb">${ input.guild.name }</a>
+          <a href="/g/${ input.guild.id }/server/edit" class="breadcrumb">General Settings</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+  
+    <script>
+
+      editor = true;
+    
+      guild = ${ JSON.stringify(input.guild) };
+      settings = ${ JSON.stringify(input.settings) };
+      try { settings.logs = JSON.parse(settings.logging); }catch(ex){ settings.logs = {}; }
+
+      settings.disabledFeatures = JSON.parse(settings.disabledFeatures);
+
+      saveURL = '/api/guild/'+guild.id+'/submitChanges/server'
+
+      function createSettingsObject(){
+
+        var result = {}
+
+        result.blockedCommands    = $('#BlockedCommands').val();
+        result.disabled           = getBool('disabled');
+        
+        
+        result.stickers           = getBool('stickers');
+        result.embeds             = getBool('embeds');
+
+        
+        result.mods               = $('#modList').val();
+        result.admins             = $('#adminList').val();
+
+
+        result.prefix             = $('#prefix').val();
+        result.lang               = $('#lang').val();
+
+        return JSON.stringify(result);
+
+      }
+    
+    </script>
+	
+    <div class="container" id="welcomer">
+
+      <br><br>
+
+      <h1> <a class="yellow-text" href="/g/${ input.guild.id }/"><</a> ${ input.guild.name } </h1>
+
+    </div>
+
+
+	
+    <div class="container" id="config-content">
+
+      <form  method="POST">
+        
+        <div id="rooms-toggle">
+          <h3>Usability</h3>
+
+          <div class="row">
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Disable Manager</h5>
+              <i>Check this if you want manager to not work on your server.</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="switch">
+                <label>
+                  Enable Bot
+                  <if(input.settings.disabled)>
+                    <input type="checkbox" id="disabled" name="disabled" checked>
+                  </if><else>
+                    <input type="checkbox" id="disabled" name="disabled">
+                  </else>
+                  <span class="lever"></span>
+                  Disable Bot
+                </label>
+              </div>
+
+            </div>  
+          </div>
+
+        </div>     
+
+        <div id="rooms-toggle">
+
+          <div class="row">
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Language</h5>
+              <i>Change the langauge Manager will use on your server.</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="input-field col s12">
+                <select id="lang" name="lang" class="lang-select">
+                  <option disabled selected>Choose your option</option>
+                </select>
+              </div>
+
+            </div>  
+          </div>
+
+        </div>
+        
+        <hr>
+
+        <div id="rooms-toggle">
+          <h3>Customization</h3>
+
+          <div class="row">
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Prefix</h5>
+              <i>Change the prefix manager uses.</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <input value="m!" id="prefix" name="prefix" type="text" placeholder="m!"><br>
+
+            </div>  
+          </div>
+
+        </div>
+
+        <div id="rooms-default">
+          <div class="row">
+
+
+            <div class="col s12 m12 left-align">
+
+              <h5>Blocked Commands</h5>
+              <i>Add commands to the list below to disable them.</i>
+
+            </div>
+
+            <div class="col s12">
+
+              <div class="row">
+                <div class="input-field col s10" id="blockedCommandCollection">
+                  <input hidden data-collection="blockedCommandCollection" value="[]" id="BlockedCommands" name="BlockedCommands" type="text"><br>
+                  <div class="chip bold manager-yellow" data-target="blockedCommandCollection" data-type="commands" onclick="addRole(this, false);"> + </div>
+
+                </div>
+              </div>
+            </div>
+
+              <script> 
+                $(function() {
+                  updateChips();
+                }); 
+              </script>
+
+                <!-- Modal Structure -->
+                <div id="dialog-select" class="modal bottom-sheet grey darken-4" style="overflow:visible">
+                  <div class="modal-content">
+
+                    <span>Select a command to block</span><br>
+
+                    <div class="input-field col s8 offset-s2 center" style="z-index: 1000 !important;">
+
+                        <for(item in input.guild.commands)>
+                          <div class="chip chip-item tooltipped" data-position="top" data-tooltip="${item.description}" data-type="selector" data-item-id="${item.name}" onclick="addSelected(this, 'command', true)">${item.name}</div>
+                        </for>
+
+                        <br><br>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+          
+          <hr>
+
+          <div class="ranks">
+            <h3>Ranks</h3>
+
+            <div class="row">
+
+              <div class="col s12 m12 left-align">
+
+                <h5>Admin Roles</h5>
+                <i>Add Roles to be admins / moderators</i><br><br>
+
+              </div>    
+
+              <div class="col s12 m6">
+
+                <div class="row">
+                  Moderators:<br>
+                  <div class="input-field col s10" id="modCollection">
+                    <input hidden data-collection="modCollection" value="[]" id="modList" name="modList" type="text"><br>
+                    <div class="chip bold manager-yellow" data-modal="role" data-target="modCollection" data-type="role" onclick="addRole(this);"> + </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="col s12 m6">
+                <div class="row">
+                  Admins:<br>
+                  <div class="input-field col s10" id="adminCollection">
+                    <input hidden data-collection="adminCollection" value="[]" id="adminList" name="adminList" type="text"><br>
+                    <div class="chip bold manager-yellow" data-modal="role" data-target="adminCollection" data-type="role" onclick="addRole(this);"> + </div>
+                      
+                    </div>
+                </div>
+
+                <script> 
+                  $(function() {
+                    updateChips();
+                  }); 
+                </script>
+
+                  <!-- Modal Structure -->
+                  <div id="dialog-select-role" class="modal bottom-sheet grey darken-4" style="overflow:visible">
+                    <div class="modal-content">
+                      <div class="input-field col s12" style="z-index: 1000 !important;">
+                        <select class="role-filled" onchange="addSelected(this, 'role', false)">
+                          <option id="inputReset" value="NONE" disabled selected>Select a role...</option>
+                          <for(item in input.guild.roles)>
+                            <option value="${item.id}" data-icon="/api/color/${item.color}">${item.name} </option>
+                          </for>
+                        </select>
+                        <label>Add A Role</label>
+                      </div>
+                    </div>
+                  </div>
+            
+
+              </div>
+            </div>
+
+          </div>
+
+        <hr>
+
+        <div id="rooms-toggle">
+          <h3>Extra Features</h3>
+
+          <div class="row">
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Enable Stickers</h5>
+              <i>Should members be allowed to use stickers on the server?</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="switch">
+                <label>
+                  Off
+                    <input type="checkbox" id="stickers" name="stickers" checked>
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
+
+            </div>  
+          </div>
+
+        </div>  
+
+        <div id="rooms-toggle">
+
+          <div class="row">
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Enable Embeds+</h5>
+              <i>Should manager display it's extra embeds?</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="switch">
+                <label>
+                  Off
+                    <input type="checkbox" id="embeds" name="embeds" checked>
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
+
+            </div>  
+          </div>
+
+        </div>     
+
+        <br><br><br>
+        
+          
+      </form>
+
+      <unsavedChanges />
+
+      <script>
+
+      $( document ).ready(function() {
+
+        JSON.parse(settings.disabledCommands).forEach( i => {
+          $('#blockedCommandCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="command" onclick="removeChip(this)">'+i+'</div>')
+        }) 
+
+        JSON.parse(settings.mods).forEach( i => {
+          $('#modCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="role" onclick="removeChip(this)">'+i+'</div>')
+        }) 
+        JSON.parse(settings.admins).forEach( i => {
+          $('#adminCollection').append('<div class="chip chip-item" data-item-id="'+i+'" data-type="role" onclick="removeChip(this)">'+i+'</div>')
+        }) 
+
+        $('select[name=lang]').val(settings.lang)
+        $('#prefix').val(settings.prefix)
+        
+        $('#stickers').prop('checked', !settings.disabledFeatures.includes('stickers') )   
+        $('#embeds').prop('checked', !settings.disabledFeatures.includes('embedsP') )   
+
+      });
+
+
+      $("form").submit(function(e) {
+
+         $.ajax({
+          type: "POST",
+          url: saveURL,
+          data: createSettingsObject(), // serializes the form's elements.    
+          dataType: 'json',
+          contentType: "application/json", // send as JSON
+          success: function(response)
+          {
+
+            Materialize.toast(response.message, 1000)
+            if(response.error == undefined){
+              $("#UnsavedChanges").slideUp("fast");
+            }
+          },
+          complete: function(data){
+            console.log(data);
+          }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      });
+
+      </script>
+    </div>
+
+  </@content>
+</site-layout>

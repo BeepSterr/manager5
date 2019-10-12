@@ -1,0 +1,278 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          
+          <a href="/g/${ input.guild.id }" class="breadcrumb">${ input.guild.name }</a>
+          <a href="/g/${ input.guild.id }/levels/edit" class="breadcrumb">Levels</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+  
+    <script>
+
+      editor = true;
+    
+      guild = ${ JSON.stringify(input.guild) };
+      settings = ${ JSON.stringify(input.settings) };
+      try { settings.logs = JSON.parse(settings.logging); }catch(ex){ settings.logs = {}; }
+
+      settings.levels   = JSON.parse(settings.levels);
+
+      saveURL = '/api/guild/'+guild.id+'/submitChanges/levels'
+
+      function createSettingsObject(){
+
+        var result = {}
+
+        result.levels         = settings.levels;
+        result.ranksEnabled   = getBool('ranksEnabled');
+        result.LevelUpNotify  = $('#LevelUpNotify').val();
+
+        return JSON.stringify(result);
+
+      }
+    
+    </script>
+	
+    <div class="container" id="welcomer">
+
+      <br><br>
+
+      <h1> <a class="yellow-text" href="/g/${ input.guild.id }/"><</a> ${ input.guild.name } </h1>
+      <span class="guild-id">Levels - Settings</span>
+
+    </div>
+
+
+	
+    <div class="container" id="config-content">
+
+      <form method="POST">
+        
+        <div id="levels-toggle">
+
+          <br><br>
+
+          <div class="row">
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>XP Gain</h5>
+              <i>Should we allow members to gain XP?</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <div class="switch">
+                <label>
+                  No
+                  <if(input.settings.ranksEnabled)>
+                    <input type="checkbox" id="ranksEnabled" name="ranksEnabled" checked>
+                  </if><else>
+                    <input type="checkbox" id="ranksEnabled" name="ranksEnabled">
+                  </else>
+                  <span class="lever"></span>
+                 Yes
+                </label>
+              </div>
+
+            </div>  
+          </div>
+
+        </div>
+        
+        <div class="row">
+
+            <div class="col s12 m12 l8 left-align">
+
+              <h5>Notifications</h5>
+              <i>How should we notify people when they level up?</i>
+
+            </div>
+            
+            <div class="col s12 m12 l4 right-align">
+              <br>
+              <select id="LevelUpNotify" name="LevelUpNotify">
+                <option value="0">No Notification</option>
+                <option value="1">React with 🎉</option>
+                <option value="2">Send a message</option>
+              </select>
+
+            </div>  
+
+        </div>
+
+
+        <div id="levels-area">
+          <div class="row">
+
+
+            <div class="col s12 m12 left-align">
+
+              <h5>LevelUp Rewards</h5>
+              <i>What rewards should be handed out when someone levels up to a certain level?</i>
+              <br><br>
+            </div>
+
+            <div class="col s12">
+
+            <div class="card-panel grey darken-4">
+              <table>
+                <thead>
+                  <tr>
+                      <th>Level</th>
+                      <th>Reward</th>
+                      <th class="right">Options</th>
+                  </tr>
+                </thead>
+
+                <tbody id="LevelRewardTable" >
+
+                </tbody>
+              </table>
+              <br><br>
+              <h5>Add Reward</h5>
+              <i>Add a new reward to the rewards list.</i><br><br>
+
+              <div class="row">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><br>
+                        <input placeholder="0" id="addRewardLVNumber" type="number" class="wheelable" min="2" value="2" autocomplete="off" >
+                      </td>
+                      <td><br>
+                        <select class="role-select" id="AddRewardRoleSelector" ></select>
+                      </td>
+                      <td>
+                        <a class="waves-effect waves-light blue btn" onclick="addReward();" style="width: 100%"><i class="material-icons">add</i></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+
+              <script for="Syncronize the display of rewards with the actual object.">
+
+                function updateTable(){
+
+                  var table = $('#LevelRewardTable'); //Actually gets the TBODY!!
+                  table.html('')
+
+                  var indx = 0;
+
+                  settings.levels.rewards.forEach( reward => {
+                    
+                    table.append('<tr><td>'+reward.level+'</td><td class="roleID">'+reward.reward+'</td><td class="right"><a onclick="removeReward('+indx+');" class="waves-effect red waves-light btn"><i class="material-icons">delete</i></a></td></tr>')
+                    indx++;
+                  
+                  })
+
+                  $( ".roleID" ).each(function( index ) {
+
+                    var roleID = $( this ).text()
+
+                    guild.roles.forEach( role => {
+                      if(role.id == roleID){
+                        $(this).text(role.name)
+                      }
+                    })
+
+                  });
+
+                }
+
+                function removeReward( index ){
+
+                  settings.levels.rewards.splice(index, 1);
+
+                  updateTable();
+                  TriggerUnsaved();
+
+                }
+
+                function addReward(){
+
+                  if( settings.levels.rewards.length > 20){
+                    Materialize.toast("You can't have more than 20 rewards.", 2000);
+                    return;
+                  }
+
+                  var level = Number($('#addRewardLVNumber').val());
+                  var role  = String($('#AddRewardRoleSelector').val());
+
+                  settings.levels.rewards.push( {
+                    level: level,
+                    reward: role,
+                    rewardType: "role"
+                  })
+
+                  updateTable();
+                  TriggerUnsaved();
+
+                }
+
+                updateTable();
+
+              </script>
+
+            </div>
+          </div>
+        </div>
+      </div>
+          
+        <hr>
+          
+      </form>
+
+      <unsavedChanges />
+
+      <script>
+
+      $( document ).ready(function() {
+
+        $('#ranksEnabled').prop('checked', settings.levels.enable);
+        $('#LevelUpNotify').val(settings.levels.notify)
+
+      });
+
+
+      $("form").submit(function(e) {
+
+         $.ajax({
+          type: "POST",
+          url: saveURL,
+          data: createSettingsObject(), // serializes the form's elements.    
+          dataType: 'json',
+          contentType: "application/json", // send as JSON
+          success: function(response)
+          {
+
+            Materialize.toast(response.message, 1000)
+            if(response.error == undefined){
+              $("#UnsavedChanges").slideUp("fast");
+            }
+          },
+          complete: function(data){
+            console.log(data);
+          }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      });
+
+      </script>
+    </div>
+
+  </@content>
+</site-layout>

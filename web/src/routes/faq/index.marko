@@ -1,0 +1,72 @@
+<site-layout>
+  <@title>
+    FAQ
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/faq" class="breadcrumb">FAQ</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+    <div class="center">
+
+      <br>
+
+      <h3>Frequently Asked Questions</h3>
+      <p>If you can't find our answer here, Join the support server and ask there!</p>
+
+    </div>
+    <br><br>
+    <div class="container black-text">
+
+      <div class="row">
+
+        <for( faq in input.faqs_pinned)>
+
+          <div class="col s12 m6">
+
+            <a href="/faq/${faq.id}" class="white-text">
+
+              <div class="card-panel">
+                  <h5 class="black-text">${faq.title}</h5>
+                  <span class="black-text">${faq.desc}</span>
+                </div>
+
+            </a>
+
+          </div> 
+
+        </for> 
+
+      </div>    
+    </div>  
+
+    <br>
+      
+    <div class="container">
+
+      <div class="row">
+
+        <for( faq in input.faqs)>
+
+          <a href="/faq/${faq.id}" class="white-text">
+            <div class="col s12">
+            
+              <b style="font-size: 150%">${faq.title}</b><br>
+              <span>${faq.desc}</span><br><br>
+
+            </div>
+          </a>
+
+        </for>
+
+      </div>
+    </div>
+  </@content>
+</site-layout>

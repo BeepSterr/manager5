@@ -1,0 +1,343 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/user/${ input.user.id }" class="breadcrumb">Members</a>
+          <a href="/user/${ input.user.id }" class="breadcrumb">${ input.user.name }</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+
+    <div class="container" id="welcomer">
+
+      <script>
+
+          userEdit  = ${ input.you };
+          user      = ${ JSON.stringify(input.user) };
+          stickers  = ${ JSON.stringify(input.stickers) }
+          profile   = ${ JSON.stringify(input.profile) }
+
+          function FormFinished(){
+
+            console.log($('#PublishFrame').contents().find("html").html())
+
+            if( $('#PublishFrame').contents().find("html").html() != "<head></head><body></body>" ){
+
+              if( $('#PublishFrame').contents().find("html").html() == "<head></head><body>OK</body>")
+                location.reload();
+
+              
+              Materialize.toast($('#PublishFrame').contents().find("html").html(), 5000)
+            }
+
+          }
+
+          var currentSticker = "0";
+
+        function showStickerPanel( stickerID ){
+
+          stickers.forEach( sticker => {
+            if ( sticker.sticker == stickerID ){
+
+              $('#view-stickerCode').text(sticker.code);
+              $('#view-exmapleUsage').text(';' + sticker.code);
+              $('#view-stickerIMG').attr('src', 'https://stickers.managerbot.me/' + sticker.sticker + '.png');
+
+              $('#ViewSticker').modal('open');
+              currentSticker = stickerID;
+
+            }
+          })
+          
+
+        }
+
+        function deleteCurrentSticker( ){
+
+          var stick = currentSticker;
+          $.ajax({
+            url: '/api/stickers/delete/' + currentSticker,
+            success: (d)=>{
+              console.log(d)
+              location.reload();
+            },
+          });
+
+        }              
+
+      </script>
+
+      <br><br>
+
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-image">
+              <img style="height: 150px; object-fit: cover;" src="/content/backgrounds/${ input.profile.profile_background }.png">
+              <span class="card-title black-text" style="margin-bottom: -70px;"> <img style="height: 100px; width: 100px; border-radius: 999%; display: inline; vertical-align: bottom;" class="circle" src="${ input.user.icon }" /> ${ input.user.name }</span>
+            </div>
+            <br><br>
+            <div class="card-content black-text">
+
+              <span class="black-text right" style="margin-top: -55px"> 
+
+                <if(input.profile.is_patreon)> 
+
+                  <i  class="material-icons red-text tooltipped" 
+                      data-position="bottom" 
+                      data-tooltip="Patreon Supporter">
+                        favorite
+                  </i>
+                  
+                </if>
+                <if(input.profile.is_translator)> 
+                  <i  class="material-icons green-text tooltipped" 
+                      data-position="bottom" 
+                      data-tooltip="Translator">
+                        g_translate
+                  </i> 
+                </if>
+                <if(input.profile.is_admin)> 
+                  <i  class="material-icons blue-text tooltipped" 
+                      data-position="bottom" 
+                      data-tooltip="Staff Member">
+                        perm_identity
+                  </i> 
+                </if>
+
+
+              </span>
+
+              <br><span style="max-height: 300px">${ input.profile.bio }</span>
+
+              <br><br>
+              
+            </div>
+            <div class="card-action">
+              <span class="card-title black-text">Stickers</span><br>
+              <div class="row">
+
+                <if(input.stickers.length == 0)>
+
+                  <i class="grey-text text-darken-2">${ input.user.name } has no stickers...</i>
+
+                </if>
+
+                <for(item in input.stickers)>
+                  <div class="col s4 m4 l2" onclick="showStickerPanel( '${item.sticker}' );">
+                    <img width="100%" class="grow" src="https://stickers.managerbot.me/${item.sticker}.png" />
+                  </div>
+                </for>
+
+              </div>
+
+              <if(input.you == true)>
+                <a class="modal-trigger blue-text" href="#addSticker" onclick=" $('#stickerCode').focus(); ">Add Sticker</a>
+              </if>
+
+            </div>
+
+            <if(input.you == true)>
+              <div class="card-action">
+                <a href="/logout" class="right red-text">Log Out</a>
+                <a class="blue-text modal-trigger" href="#editProfile">Edit Profile</a>
+              </div>
+            </if>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Structure -->
+      
+        <div id="addSticker" class="modal grey darken-4" style="max-width: 300px">
+          <div class="modal-content white-text">
+
+            <h5>New Sticker</h5>
+
+            <form target="PublishFrame" id="addStickerForm" action="/api/stickers/add" method="post" enctype="multipart/form-data">
+
+              <div><br>
+                <div class="progress grey darken-3">
+                    <div class="determinate yellow" style="width: ${ input.stickers.length / 10 * 100}%"></div>
+                </div>
+                ${input.stickers.length}/10 Sticker Limit
+              </div>
+              <br>
+
+              <div class="input-field">
+                <input id="stickerCode" name="stickerCode" type="text" class="validate" placeholder="Sticker Code" data-length="15">
+              </div>
+
+              <img id="stickerPreview" width="250px" height="250px"/>
+
+              <div class="file-field input-field">
+
+                <div class="btn">
+                  <span>File</span>
+                  <input id="stickerFile" name="stickerFile" type="file" accept="image/png">
+                </div>
+
+                <div class="file-path-wrapper">
+                  <input class="file-path validate" type="text">
+                </div>
+
+              </div>
+
+              <button class="btn waves-effect waves-light center" style="width:100%" type="submit" name="action">Create Sticker</button>
+
+            </form>
+
+          </div>
+        </div>
+        
+      <if(input.you == true)>
+        <div id="editProfile" class="modal grey darken-4">
+          <div class="modal-content">
+            <form class="pe">
+              <h5>Profile</h5>
+              <div class="row">
+
+                <div class="input-field col s12">
+                  <span>Page Bio</span>
+                  <textarea id="bio" class="materialize-textarea">${ input.profile.bio}</textarea>
+                </div>
+
+              </div>
+
+              <hr><br>
+
+              <h5>Notifications</h5>
+              <div class="row" style="padding-left: 10px">
+
+                <p>
+                  <input type="checkbox" class="checkbox-manager" id="room" name="room" />
+                  <label for="room" class="white-text" >Private room</label>
+                </p>
+                <p>
+                  <input type="checkbox" class="checkbox-manager" id="ghostping" name="ghostping" />
+                  <label for="ghostping" class="white-text">Ghost Pings</label>
+                </p>
+                <p>
+                  <input type="checkbox" class="checkbox-manager" id="joinleaves" name="joinleaves" >
+                  <label for="joinleaves" class="white-text">Join / Leave Your Voice Channel</label>
+                </p>
+
+              </div>
+            </form>
+          </div>
+
+          <div class="modal-footer grey darken-3">
+            <a href="#" onclick="$('.pe').submit()" class="white-text modal-close waves-effect waves-green btn-flat">Save Changes</a>
+          </div>
+
+        </div>
+
+        <script>
+
+          function createSettingsObject(){
+
+            result = {};
+
+            result.bio                      = $('#bio').val();
+            result.room                     = getBool('room');
+            result.ghostping                = getBool('ghostping');
+            result.joinleaves               = getBool('joinleaves');
+
+            return JSON.stringify(result);
+
+          }
+
+          $( document ).ready(function() {
+            $('#room').prop('checked', profile.notifySettings.includes('room')); 
+            $('#ghostping').prop('checked', profile.notifySettings.includes('ghostping')); 
+            $('#joinleaves').prop('checked', profile.notifySettings.includes('joinleaves')); 
+          });
+
+
+          $(".pe").submit(function(e) {
+
+            $.ajax({
+              type: "POST",
+              url: '/api/user/saveProfile',
+              data: createSettingsObject(), // serializes the form's elements.    
+              dataType: 'json',
+              contentType: "application/json", // send as JSON
+              success: function(response)
+              {
+
+                Materialize.toast(response.message, 1000)
+                if(response.error == undefined){
+                  $("#UnsavedChanges").slideUp("fast");
+                }
+              },
+              complete: function(data){
+                console.log(data);
+              }
+            });
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+
+          });
+        </script>
+
+      </if>
+
+      
+      <!-- Modal Structure -->
+      <div id="ViewSticker" class="modal grey darken-4" style="max-width: 300px">
+        <div class="modal-content white-text center">
+
+          <h5 id="view-stickerCode">stickerCode</h5>
+
+            <img id="view-stickerIMG" width="250px" height="250px"/><br><br>
+
+
+
+            <if(input.you == true)>
+
+              To use in discord type: <pre id="view-exmapleUsage">$</pre><br><br>
+              <a class="waves-effect waves-light btn red" onclick="deleteCurrentSticker()" >Delete</a>
+
+            </if>
+
+        </div>
+      </div>
+
+
+    </div>
+
+    <iframe name="PublishFrame" id="PublishFrame" onload="FormFinished()" style="display:none;" width="0px" height="0px"></iframe>
+
+    <script>
+    
+
+          function readURL(input) {
+
+            if (input.files && input.files[0]) {
+              var reader = new FileReader();
+
+              reader.onload = function(e) {
+                $('#stickerPreview').attr('src', e.target.result);
+              }
+
+              reader.readAsDataURL(input.files[0]);
+            }
+          }
+
+          $("#stickerFile").change(function() {
+            readURL(this);
+          });
+
+    </script>
+
+  </@content>
+</site-layout>

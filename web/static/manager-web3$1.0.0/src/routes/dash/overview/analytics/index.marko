@@ -1,0 +1,216 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@content>
+
+    <script>
+    
+      guild = ${ JSON.stringify(input.guild) };
+      analytics = ${ JSON.stringify(input.analytics) };
+
+
+      function Momentimize(obj){
+
+        // Sorry, This func name is just too much fun :)
+        obj._timestamp = obj.timestamp;
+        obj.timestamp = moment(obj._timestamp);
+
+        return obj;
+
+      }
+
+
+      function buildAnalytics(){
+
+        // Main data structure.
+        data = {
+          now: moment(),
+          graphs: {
+            messagesWeek: [],
+            messagesDay: [],
+            membersWeek: [],
+            memberdiff: []
+          },
+          labels: {
+            messagesWeek: [],
+            messagesDay: [],
+            membersWeek: [],
+            memberdiff: []
+          },
+          temp: {
+            messagesWeek: [],
+            messagesDay: [],
+            membersWeek: [],
+            memberdiff: []
+          }
+        }
+
+        //Seperate all into respective days
+        analytics.message.forEach( message => {
+
+            var obj = Momentimize(message);
+            
+            //Remove time portion of the moment so we can format weekdays.
+            var day = obj.timestamp.format('ddd');
+            var hour = obj.timestamp.format('h A');
+
+            if(data.temp.messagesWeek[day] == undefined){ data.temp.messagesWeek[day] = 0}
+            if(data.temp.messagesDay[hour] == undefined){ data.temp.messagesDay[hour] = 0}
+
+            data.temp.messagesWeek[day]++;
+            data.temp.messagesDay[hour]++;
+
+        })
+
+        for (var items in data.temp.messagesDay){
+            data.labels.messagesDay.push(items)
+            data.graphs.messagesDay.push( data.temp.messagesDay[items] );
+        }
+
+        //Seperate all into respective days
+        analytics.j.forEach( j => {
+
+            var obj = Momentimize(j);
+            
+            //Remove time portion of the moment so we can format weekdays.
+            var day = obj.timestamp.format('ddd');
+
+            if(data.temp.memberdiff[day] == undefined){ data.temp.memberdiff[day] = 0}
+            data.temp.memberdiff[day]++;
+
+        })
+
+        for (var items in data.temp.memberdiff){
+            data.labels.memberdiff.push(items)
+            data.graphs.memberdiff.push( data.temp.memberdiff[items] );
+        }
+
+      }
+      
+    
+    </script>
+	
+    <div class="container" id="welcomer">
+
+      <br><br>
+
+      <h1> <a class="yellow-text" href="/g/${ input.guild.id }/"><</a> ${ input.guild.name } </h1>
+      <span class="guild-id">Analytical Data</span>
+
+    </div>
+
+
+	
+    <div class="container" id="config-content">
+
+      <form method="POST">
+
+        <div id="analytics-base">
+
+          <br><br>
+
+          <div class="row">
+
+            <div class="col s12 m12 l6 left-align">
+
+              <h5>Member Count</h5>
+              <i>This Week</i>
+
+							<canvas id="chartMemberChangesWeek"></canvas>
+              <script>
+
+                $( document ).ready(function() {
+
+                  buildAnalytics();
+
+                  setTimeout( ()=> {
+
+                    var ctx = document.getElementById("chartMemberChangesWeek").getContext('2d');
+                    new Chart(ctx, {
+                      data: { 
+                        labels: data.labels.memberdiff,
+                        datasets: [ {
+                          label: "Member Changes",
+                          data: data.graphs.memberdiff }
+                        ]
+
+                      },
+                      type: 'line',
+                      options: {
+                        scales: {
+                          yAxes: [{
+                            ticks: {
+                              beginAtZero: false
+                            }
+                          }]
+                        }
+                      }
+                    })
+                  
+                  },10)
+
+                });
+
+              </script>
+
+
+            </div> 
+
+            <div class="col s12 m12 l6 left-align">
+
+              <h5>Chat Activity</h5>
+              <i>Today</i><br>
+
+							<canvas id="chartChannelActivity"></canvas>
+              <script>
+
+                $( document ).ready(function() {
+
+                  buildAnalytics();
+
+                  setTimeout( ()=> {
+
+                    var ctx = document.getElementById("chartChannelActivity").getContext('2d');
+                    new Chart(ctx, {
+                      data: { 
+                        labels: data.labels.messagesDay,
+                        datasets: [ {
+                          label: "Messages",
+                          data: data.graphs.messagesDay }
+                        ]
+
+                      },
+                      type: 'line',
+                      options: {
+                        scales: {
+                          yAxes: [{
+                            ticks: {
+                              beginAtZero: true
+                            }
+                          }]
+                        }
+                      }
+                    })
+                  
+                  },10)
+
+                });
+
+              </script>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <hr>
+
+          
+      </form>
+
+    </div>
+
+  </@content>
+</site-layout>

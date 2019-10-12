@@ -1,0 +1,161 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/g/${ input.guild.id }" class="breadcrumb">${ input.guild.name }</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+
+    <div class="container" id="welcomer">
+
+      <script>
+
+        editor = false;
+      
+        guild = ${ JSON.stringify(input.guild) };
+        settings = ${ JSON.stringify(input.settings) };
+    
+      </script>
+
+      <h1> <img class="icon" style="max-height: 100px" src="${ input.guild.icon }"> ${ input.guild.name } </h1>
+
+
+      <ul id="dashmenu" class="collapsible expandable">
+        <li>
+          <div class="collapsible-header"><i class="material-icons">bar_chart</i>Server Details</div>
+          <div class="collapsible-body">
+          
+            <table>
+              <thead>
+                <tr>
+                    <th>Overview</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Server ID</td>
+                  <td>${ input.guild.id }</td>
+                </tr>
+                <tr>
+                  <td>Members</td>
+                  <td>${ input.guild.memberCount }</td>
+                </tr>
+                <tr>
+                  <td>Roles</td>
+                  <td>${ input.guild.roleCount }</td>
+                </tr>
+              </tbody>
+            </table>   
+
+            <br>
+
+            <table>
+              <thead>
+                <tr>
+                    <th>Roles</th>
+                </tr>
+              </thead>
+              <tbody>
+                <for(key in input.guild.roles)>
+                  <tr style="background-color: ${ key.color}26 ">
+                    <td>${ key.name }</td>
+                    <td>${ key.id }</td>
+                  </tr>
+                </for>
+              </tbody>
+            </table>
+          
+          </div>
+        </li>
+        <li class="active">
+          <div class="collapsible-header"><i class="material-icons">dashboard</i>Manager Features</div>
+          <div class="collapsible-body">
+
+            <div class="module-list row">
+
+              <div class="col s12 m12 l6">
+                <div class="card white">
+                  <div class="card-content black-text">
+                    <span class="card-title">General</span>
+                    <p>Set the prefix, Language, Ranks & Blocked commands here.</p><br>
+                    <a href="./server/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l6">
+                <div class="card white">
+                  <div class="card-content black-text">
+                    <span class="card-title">Private Rooms</span>
+                    <p>Allow members to create their own temporary rooms!</p><br>
+                    <a href="./rooms/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l6">
+                <div class="card white">
+                  <div class="card-content black-text">
+                    <span class="card-title">Server Logs</span>
+                    <p>Log actions on your server to text channels!</p><br>
+                    <a href="./logs/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l6">
+                <div class="card white">
+                  <div class="card-content black-text">
+                    <span class="card-title">Levels & Ranking</span>
+                    <p>Allow your members to earn XP to level up and earn rewards!</p><br>
+                    <a href="./levels/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+                    <a href="./leaderboard" class="waves-effect waves-light btn-flat">Leaderboards</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l6">
+                <div class="card white">
+                  <div class="card-content black-text">
+                    <span class="card-title">Moderation</span>
+                    <p>Automatically Moderate your channels.</p><br>
+                    <a href="./automod/edit" class="waves-effect waves-light btn-flat">Modify Settings</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col s12 m12 l6">
+                <div class="card white">
+                  <div class="card-content black-text">
+                    <span class="card-title">Analytics</span>
+                    <p>See when your members are most active, and more!</p><br>
+                    <a href="./analize" class="waves-effect waves-light btn-flat">View Data</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </li>
+      </ul>
+
+    </div>
+
+    <script>
+      $(function(){
+        $('.collapsible').collapsible('open', 1);
+      })
+    </script>
+
+  </@content>
+</site-layout>

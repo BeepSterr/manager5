@@ -1,0 +1,40 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/acp" class="breadcrumb">ACP</a>
+          <a href="/acp/overview" class="breadcrumb">Overview</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+
+    <div class="row center">
+      <div class="col offset-s0 offset-l1 l3 center">
+
+        <acpnav/>
+
+      </div>
+      <div class="col l7 left-align">
+
+          <br><br>
+          <h4>Overview</h4>
+
+          <p>Welcome to Manager's ACP. Here are some tools to help you determine issues & solve them.</p>
+
+          <p>/api/stats</p>
+          <iframe src="/api/stats" style="background: white;" width="100%" height="38px"></iframe>
+
+      </div>
+    </div>
+
+
+  </@content>
+</site-layout>

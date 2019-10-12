@@ -1,0 +1,126 @@
+<site-layout>
+  <@title>
+    Credits
+  </@title>  
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/credits" class="breadcrumb">Credits</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+    <div class="container">
+
+      <h2>Manager Bot</h2>
+      Manager was created, Maintained & hosted by Nioxed.<br>
+      The project would never have gotten to where it is now without these people/packages.<br><br>
+
+
+      <h5>Patreons</h5>
+      <div id="PatreonArea" class="row">
+      </div><br>
+
+      <h5>Translators</h5>
+      <div id="TranslatorArea" class="row">
+      </div><br>
+
+
+      <h5>NPM Packages</h5><ul>
+        <li><a target="_blank" href="https://www.npmjs.com/package/bufferutil">bufferutil</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/chalk">chalk</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/dashify">dashify</a></li>
+        <li><a target="_blank" href="https://github.com/discordjs/discord.js">Discord.JS</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/express">express</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/github-update">github-update</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/jimp">jimp</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/knex">knex</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/mathjs">mathjs</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/moment">moment</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/mysql">mysql</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/node-schedule">node-schedule</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/node-snowflake">node-snowflake</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/request">request</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/safe-browse-url-lookup">safe-browse-url-lookup</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/shallow-diff">shallow-diff</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/strip-ansi">strip-ansi</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/express-fileupload">express-fileupload</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/install">install</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/marko">marko</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/passport">passport</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/passport-discord">passport-discord</a></li>
+        <li><a target="_blank" href="https://www.npmjs.com/package/snekfetch">snekfetch</a></li>
+      </ul><br>
+
+      <h5>Other Credits</h5>
+      <div>
+        Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+      </div><br>
+
+      <h5>And Ofcourse..</h5>
+      You! Everyone who uses manager helps it grow.<br>I Never expected this silly old bot of mine to get on more than a couple hundred servers ever.. And well it has clearly passed that! &lt;3
+      <br><br>
+
+
+    </div>
+
+    <script>
+
+      $( document ).ready(function() {
+
+        $.ajax({
+          url: "/api/credits/translators",
+          success: function( body ){
+
+            body.forEach( translator => {
+
+              $('#TranslatorArea').append(`  
+  <a href="/user/`+translator.id+`"<div class="col s6 m4">
+    <div class="card hoverable">
+      <div class="card-content black-text">
+        <p>`+translator.tag+`</p>
+      </div>
+    </div></a>
+         `)
+
+            })
+
+          }
+        });
+        
+        $.ajax({
+          url: "/api/credits/patreons",
+          success: function( body ){
+
+            body.forEach( patreon => {
+
+              $('#PatreonArea').append(`  
+  <a href="/user/`+patreon.id+`"<div class="col s6 m4">
+    <div class="card horizontal hoverable">
+      <div class="card-image">
+        <img height="75" src="`+patreon.avatar+`">
+      </div>
+      <div class="card-stacked">
+        <div class="card-content black-text">
+          <p>`+patreon.tag+`</p>
+        </div>
+      </div>
+    </div>
+  </div>
+         `)
+
+            })
+
+          }
+        });
+
+      });
+
+    </script>
+
+  </@content>
+</site-layout>

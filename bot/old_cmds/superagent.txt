@@ -1,0 +1,9 @@
+    superagent.patch('https://discordapp.com/api/channels/' + message.channel.id)
+      .set('Authorization', `Bot ${token}`)
+      .set('Content-Type', 'application/json')
+      .set('User-Agent', 'Discord Boat')
+      .send({ 'rate_limit_per_user': sw })
+      .end((err, res) => {
+        if (err) { return console.log(err) }
+        return message.channel.send('❄ Slowmode set to ' + sw + ' seconds.')
+      })

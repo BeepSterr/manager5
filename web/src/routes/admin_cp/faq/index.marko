@@ -1,0 +1,62 @@
+<site-layout>
+  <@title>
+    Manager
+  </@title>
+  <@crumbs>
+    <nav style="height: 40px;">
+      <div class="nav-wrapper grey darken-4" style="padding-left: 25px; line-height:40px">
+        <div class="col s12">
+          <a href="/" class="breadcrumb">Manager</a>
+          <a href="/acp" class="breadcrumb">ACP</a>
+          <a href="/acp/faq" class="breadcrumb">FAQ</a>
+        </div>
+      </div>
+    </nav>
+  </@crumbs>
+  <@content>
+
+
+    <div class="row center">
+      <div class="col offset-s0 offset-l1 l3 center">
+
+        <acpnav/>
+
+      </div>
+      <div class="col l7 left-align">
+
+          <br><br>
+          <h4>FAQ</h4>
+
+            <table>
+              <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Views</th>
+                    <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <for(faq in input.faq)>
+                  <tr>
+                    <td>${faq.id}</td>
+                    <td>${faq.title}</td>
+                    <td>${faq.views}</td>
+                    <td>
+                      <a href="/acp/faq/edit/${faq.id}" class="waves-effect btn-flat white-text blue"><i class="material-icons">edit</i></a><i class="spacer"></i>
+                      <a href="/api/acp/faq/delete/${faq.id}" class="waves-effect btn-flat white-text red"><i class="material-icons">delete</i></a>
+                    </td>
+                  </tr>
+                </for>
+              </tbody>
+            </table><br>
+            
+            <a href="/acp/faq/new" class="waves-effect btn-flat grey-text text-lighten-1"><i class="material-icons left">add</i> Add</a>
+
+      </div>
+    </div>
+
+
+  </@content>
+</site-layout>

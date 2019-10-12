@@ -1,0 +1,8 @@
+{
+    "<logItem>": {
+        "renderer": "./index",
+        "@event": "string",
+        "@name": "string",
+        "@desc": "string"
+    }
+}
